@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Data Explorer</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌤️ Weather Data Explorer</h1>
+            <p>Explore historical weather data by country, city, and month</p>
+        </header>
+
+        <main>
+            <div class="selector-panel">
+                <div class="form-group">
+                    <label for="country-select">Country:</label>
+                    <select id="country-select" disabled>
+                        <option value="">Loading countries...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="city-select">City:</label>
+                    <select id="city-select" disabled>
+                        <option value="">Select a country first</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="month-select">Month:</label>
+                    <select id="month-select" disabled>
+                        <option value="">Select a city first</option>
+                    </select>
+                </div>
+
+                <button id="get-weather" disabled>Get Weather Data</button>
+            </div>
+
+            <div class="weather-display" id="weather-display">
+                <h2>Weather Information</h2>
+                <p>Select a country, city, and month to view weather data.</p>
+            </div>
+
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+        </main>
+
+        <footer>
+            <div class="api-links">
+                <a href="/api-docs" target="_blank">📄 API Documentation</a>
+                <a href="/countries" target="_blank">🗺️ View Countries JSON</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
