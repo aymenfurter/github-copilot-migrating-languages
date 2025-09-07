@@ -1,7 +1,7 @@
 use axum::{
     extract::Path,
-    http::{StatusCode, header},
-    response::{Json, IntoResponse, Html},
+    http::StatusCode,
+    response::{Json, Html},
     routing::get,
     Router,
 };
@@ -9,8 +9,8 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tokio::net::TcpListener;
+use tower_http::services::ServeDir;
 use utoipa::OpenApi;
-use utoipa_swagger_ui::SwaggerUi;
 
 #[derive(Debug, Deserialize, Serialize, Clone, utoipa::ToSchema)]
 struct MonthlyTemperature {
@@ -54,16 +54,15 @@ fn load_weather_data() -> anyhow::Result<WeatherData> {
     get,
     path = "/",
     responses(
-        (status = 301, description = "Redirect to API documentation")
+        (status = 200, description = "Main weather application UI")
     ),
     tag = "weather"
 )]
-async fn root() -> impl IntoResponse {
-    (
-        StatusCode::MOVED_PERMANENTLY,
-        [(header::LOCATION, "/docs")],
-        "",
-    )
+async fn root() -> Html<String> {
+    match std::fs::read_to_string("static/index.html") {
+        Ok(content) => Html(content),
+        Err(_) => Html("<h1>Error loading UI</h1>".to_string())
+    }
 }
 
 #[utoipa::path(
@@ -103,7 +102,7 @@ async fn monthly_average(
     Ok(Json(month_data.clone()))
 }
 
-async fn docs() -> Html<&'static str> {
+async fn api_docs() -> Html<&'static str> {
     Html(r#"
     <!DOCTYPE html>
     <html>
@@ -138,8 +137,9 @@ fn create_app() -> Router {
         .route("/", get(root))
         .route("/countries", get(countries))
         .route("/countries/:country/:city/:month", get(monthly_average))
-        .route("/docs", get(docs))
+        .route("/api-docs", get(api_docs))
         .route("/api-docs/openapi.json", get(openapi_spec))
+        .nest_service("/static", ServeDir::new("static"))
 }
 
 #[tokio::main]

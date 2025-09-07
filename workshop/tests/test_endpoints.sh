@@ -20,8 +20,8 @@ test_endpoint() {
 
 echo -e "${YELLOW}Running comprehensive endpoint tests...${RESET}\n"
 
-# Test the root endpoint
-test_endpoint "http://localhost:8000/" 301 "root endpoint (redirect)"
+# Test the root endpoint (now serves UI)
+test_endpoint "http://localhost:8000/" 200 "root endpoint (UI)"
 
 # Test the countries endpoint
 test_endpoint "http://localhost:8000/countries" 200 "countries endpoint"
